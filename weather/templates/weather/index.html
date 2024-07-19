@@ -1,0 +1,53 @@
+{% extends 'weather/base.html' %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Weather App</h1>
+        <div class="row justify-content-center">
+            <form method="post" class="border p-4 rounded">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary btn-block">Get Weather</button>
+            </form>
+            <div class="">
+                {% if error_message %}
+                    <div class="alert alert-danger mt-3">{{ error_message }}</div>
+                {% endif %}
+                
+                {% if weather_data %}
+                    <div class="weather-container mt-4">
+                        {% for avg in average_temperatures %}
+                            <div class="weather-day border p-3 rounded">
+                                <h2 class="text-center">    {{ avg.morning.1 }}</h2>
+                                <ul class="list-group">
+                                    <li class="list-group-item">Morning: {{ avg.morning.0 }}°C</li>
+                                    <li class="list-group-item">Day: {{ avg.day.0 }}°C</li>
+                                    <li class="list-group-item">Evening: {{ avg.evening.0 }}°C</li>
+                                    <li class="list-group-item">Night: {{ avg.night.0 }}°C</li>
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            $("#city-input").autocomplete({
+                source: "{% url 'city_autocomplete' %}",
+                open: function() {
+                    var ul = $(this).autocomplete("widget");
+                    ul.find("li:first").css("background-color", "yellow");
+                },
+                focus: function(event, ui) {
+                    var ul = $(this).autocomplete("widget");
+                    ul.find("li").css("background-color", "");
+                    ul.find("li:first").css("background-color", "yellow");
+                }
+            });
+        });
+    </script>
+{% endblock %}
